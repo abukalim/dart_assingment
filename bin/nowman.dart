@@ -1,61 +1,61 @@
-import 'package:args/args.dart';
+class Book {
+  // Properties
+  String title;
+  String author;
+  int publicationYear;
+  int pagesRead = 0;
 
-const String version = '0.0.1';
+  // Static property to keep track of total books created
+  static int totalBooks = 0;
 
-ArgParser buildParser() {
-  return ArgParser()
-    ..addFlag(
-      'help',
-      abbr: 'h',
-      negatable: false,
-      help: 'Print this usage information.',
-    )
-    ..addFlag(
-      'verbose',
-      abbr: 'v',
-      negatable: false,
-      help: 'Show additional command output.',
-    )
-    ..addFlag(
-      'version',
-      negatable: false,
-      help: 'Print the tool version.',
-    );
-}
-
-void printUsage(ArgParser argParser) {
-  print('Usage: dart nowman.dart <flags> [arguments]');
-  print(argParser.usage);
-}
-
-void main(List<String> arguments) {
-  final ArgParser argParser = buildParser();
-  try {
-    final ArgResults results = argParser.parse(arguments);
-    bool verbose = false;
-
-    // Process the parsed arguments.
-    if (results.wasParsed('help')) {
-      printUsage(argParser);
-      return;
-    }
-    if (results.wasParsed('version')) {
-      print('nowman version: $version');
-      return;
-    }
-    if (results.wasParsed('verbose')) {
-      verbose = true;
-    }
-
-    // Act on the arguments provided.
-    print('Positional arguments: ${results.rest}');
-    if (verbose) {
-      print('[VERBOSE] All arguments: ${results.arguments}');
-    }
-  } on FormatException catch (e) {
-    // Print usage information if an invalid argument was provided.
-    print(e.message);
-    print('');
-    printUsage(argParser);
+  // Constructor
+  Book(this.title, this.author, this.publicationYear) {
+    totalBooks++; // Increment totalBooks whenever a new Book object is created
   }
+
+  // Method to add pages read
+  void read(int pages) {
+    if (pages > 0) {
+      pagesRead += pages;
+    } else {
+      print("Pages read should be a positive number.");
+    }
+  }
+
+  // Getter methods
+  int getPagesRead() => pagesRead;
+  String getTitle() => title;
+  String getAuthor() => author;
+  int getPublicationYear() => publicationYear;
+
+  // Method to calculate book age
+  int getBookAge() {
+    int currentYear = DateTime.now().year; // Get the current year
+    return currentYear - publicationYear;
+  }
+}
+
+void main() {
+  // Creating three Book objects
+  Book book1 = Book("1984", "George Orwell", 1949);
+  Book book2 = Book("To Kill a Mockingbird", "Harper Lee", 1960);
+  Book book3 = Book("The Great Gatsby", "F. Scott Fitzgerald", 1925);
+
+  // Simulating reading pages for each book
+  book1.read(50);
+  book2.read(30);
+  book3.read(75);
+
+  // Printing book details and their ages
+  List<Book> books = [book1, book2, book3];
+  for (var book in books) {
+    print("Title: ${book.getTitle()}");
+    print("Author: ${book.getAuthor()}");
+    print("Publication Year: ${book.getPublicationYear()}");
+    print("Pages Read: ${book.getPagesRead()}");
+    print("Book Age: ${book.getBookAge()} years\n");
+  }
+
+  // Displaying total number of Book objects created
+  print("Total number of books created: ${Book.totalBooks}");
 }
